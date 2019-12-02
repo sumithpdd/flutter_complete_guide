@@ -88,14 +88,10 @@ class _MyHomePageState extends State<MyHomePage> {
           );
         });
   }
-
-  @override
-  Widget build(BuildContext context) {
-    final mediaQuery = MediaQuery.of(context);
-    final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final PreferredSizeWidget appBar = Platform.isIOS
+Widget _buildAppBar(){
+  return Platform.isIOS
         ? CupertinoNavigationBar(
-            middle: Text('Flutter App'),
+            middle: Text('Personal Expenses'),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
@@ -107,7 +103,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
           )
         : AppBar(
-            title: Text('Flutter App'),
+            title: Text('Personal Expenses'),
             actions: <Widget>[
               IconButton(
                 icon: Icon(Icons.add),
@@ -115,6 +111,13 @@ class _MyHomePageState extends State<MyHomePage> {
               )
             ],
           );
+}
+
+  @override
+  Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
+    final PreferredSizeWidget appBar = _buildAppBar();
     var txtListWidget = Container(
         height: (mediaQuery.size.height -
                 appBar.preferredSize.height -
