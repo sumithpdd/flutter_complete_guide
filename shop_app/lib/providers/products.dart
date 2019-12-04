@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app/providers/product.dart'; 
+import 'package:shop_app/providers/product.dart';
 import '../dummy_data.dart';
 
 class Products with ChangeNotifier {
@@ -8,6 +8,10 @@ class Products with ChangeNotifier {
 //Getter to return private list of products
   List<Product> get items {
     return _items;
+  }
+
+  List<Product> get favouriteItems {
+    return _items.where((p) => p.isFavorite).toList();
   }
 
 //Logic seperated from the widget
