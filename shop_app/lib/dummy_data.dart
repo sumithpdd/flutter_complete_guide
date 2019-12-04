@@ -1,5 +1,6 @@
+ 
+import 'package:shop_app/providers/product.dart';
 
-import 'models/product.dart';
 class DummyData {
   
 static List<Product> loadedProduct =   [
