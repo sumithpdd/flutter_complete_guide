@@ -39,8 +39,9 @@ class CartItem extends StatelessWidget {
             leading: Padding(
               padding: const EdgeInsets.all(5.0),
               child: FittedBox(
-                child: CircleAvatar(
-                  child: Text('\$$price'),
+                fit: BoxFit.fill,
+                child: CircleAvatar(                  
+                  child: Text('\$$price',style: TextStyle(fontSize: 10),),
                 ),
               ),
             ),
