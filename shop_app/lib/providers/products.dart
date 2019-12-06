@@ -22,10 +22,10 @@ class Products with ChangeNotifier {
     return _items.firstWhere((p) => p.id == id);
   }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) async {
     final url = AppSettings.fbUrl + 'products.json';
-    http
-        .post(
+    try{
+ final response = await http.post(
       url,
       body: json.encode({
         'title': product.title,
@@ -34,17 +34,25 @@ class Products with ChangeNotifier {
         'imageUrl': product.imageUrl,
         'isFavourite': product.isFavorite
       }),
-    )
-        .then((response) {
-      final newProduct = Product(
-          id: json.decode(response.body)['name'],
-          title: product.title,
-          price: product.price,
-          description: product.description,
-          imageUrl: product.imageUrl);
-      _items.add(newProduct);
-      notifyListeners();
-    });
+    );
+
+    final newProduct = Product(
+        id: json.decode(response.body)['name'],
+        title: product.title,
+        price: product.price,
+        description: product.description,
+        imageUrl: product.imageUrl);
+    _items.add(newProduct);
+    notifyListeners();
+    }catch(error){
+         print(error);
+      throw error;
+    }
+   
+    // }).catchError((error){
+    //   print(error);
+    //   throw error;
+    // });
   }
 
   void updateProduct(String id, Product newProduct) {
