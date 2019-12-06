@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../app_setting.dart';
 
 class Product with ChangeNotifier {
   final String id;
@@ -6,7 +11,7 @@ class Product with ChangeNotifier {
   final String description;
   final double price;
   final String imageUrl;
-  bool isFavorite =false;
+  bool isFavorite = false;
 //named arguments
   Product(
       {@required this.id,
@@ -16,8 +21,25 @@ class Product with ChangeNotifier {
       @required this.imageUrl,
       bool isFavorite});
 
-  void toggleFavouriteStatus() {
+  Future<void> toggleFavoriteStatus() async {
+    final oldstatus = isFavorite;
     isFavorite = !isFavorite;
-    notifyListeners();
+
+    final url = AppSettings.fbUrl + 'products/$id.json';
+    try {
+      final response = await http.patch(
+        url,
+        body: json.encode({
+          'isFavorite': isFavorite,
+        }),
+      );
+      if (response.statusCode >= 400) {
+        isFavorite = oldstatus;
+      }
+      notifyListeners();
+    } catch (error) {
+      isFavorite = oldstatus;
+      notifyListeners();
+    }
   }
 }
