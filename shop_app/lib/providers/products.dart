@@ -1,6 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:shop_app/app_setting.dart';
 import 'package:shop_app/providers/product.dart';
 import '../dummy_data.dart';
+import 'package:http/http.dart' as http;
 
 class Products with ChangeNotifier {
   List<Product> _items = DummyData.loadedProduct;
@@ -20,14 +23,28 @@ class Products with ChangeNotifier {
   }
 
   void addProduct(Product product) {
-    final newProduct = Product(
-        id: DateTime.now().toString(),
-        title: product.title,
-        price: product.price,
-        description: product.description,
-        imageUrl: product.imageUrl);
-    _items.add(newProduct);
-    notifyListeners();
+    final url = AppSettings.fbUrl + 'products.json';
+    http
+        .post(
+      url,
+      body: json.encode({
+        'title': product.title,
+        'description': product.description,
+        'price': product.price,
+        'imageUrl': product.imageUrl,
+        'isFavourite': product.isFavorite
+      }),
+    )
+        .then((response) {
+      final newProduct = Product(
+          id: json.decode(response.body)['name'],
+          title: product.title,
+          price: product.price,
+          description: product.description,
+          imageUrl: product.imageUrl);
+      _items.add(newProduct);
+      notifyListeners();
+    });
   }
 
   void updateProduct(String id, Product newProduct) {
@@ -39,8 +56,9 @@ class Products with ChangeNotifier {
       print('product doesnot exit for id : $id');
     }
   }
-  void deleteProduct(String id){
-_items.removeWhere((prod)=>prod.id==id);
-notifyListeners();
+
+  void deleteProduct(String id) {
+    _items.removeWhere((prod) => prod.id == id);
+    notifyListeners();
   }
 }

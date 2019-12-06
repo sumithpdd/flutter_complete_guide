@@ -34,10 +34,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
   }
 
   @override
-  void didChangeDependencies() { 
+  void didChangeDependencies() {
     if (_isInit) {
       final productId = ModalRoute.of(context).settings.arguments as String;
-       if (productId != null) {
+      if (productId != null) {
         _editedProduct = Provider.of<Products>(context).findById(productId);
         _initValues = {
           'title': _editedProduct.title,
@@ -77,8 +77,13 @@ class _EditProductScreenState extends State<EditProductScreen> {
     if (_editedProduct.id != null) {
       Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
+          Navigator.of(context).pop();
     } else {
-      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+      Provider.of<Products>(context, listen: false)
+          .addProduct(_editedProduct)
+          .then((_) {
+        Navigator.of(context).pop();
+      });
     }
   }
 
