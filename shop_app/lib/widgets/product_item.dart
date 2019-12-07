@@ -17,7 +17,7 @@ class ProductItem extends StatelessWidget {
     Product product = Provider.of<Product>(context);
     // now adding Cart provider
     Cart cart = Provider.of<Cart>(context, listen: false);
-final authData= Provider.of<Auth>(context,listen: false);
+    final authData = Provider.of<Auth>(context, listen: false);
     return ClipRRect(
       borderRadius: BorderRadius.circular(10),
       child: GridTile(
@@ -26,9 +26,13 @@ final authData= Provider.of<Auth>(context,listen: false);
             Navigator.of(context).pushNamed(ProductDetailScreen.routeName,
                 arguments: product.id);
           },
-          child: Image.network(
-            product.imageUrl,
-            fit: BoxFit.cover,
+          child: Hero(
+            tag: product.id,
+                      child: FadeInImage(
+              placeholder: AssetImage('assets/images/product-placeholder.png'),
+              image: NetworkImage(product.imageUrl),
+              fit: BoxFit.cover,
+            ),
           ),
         ),
         footer: GridTileBar(
@@ -39,7 +43,7 @@ final authData= Provider.of<Auth>(context,listen: false);
               icon: Icon(
                   product.isFavorite ? Icons.favorite : Icons.favorite_border),
               onPressed: () {
-                product.toggleFavoriteStatus(authData.token,authData.userId);
+                product.toggleFavoriteStatus(authData.token, authData.userId);
               },
               color: Theme.of(context).accentColor,
             ),
@@ -52,9 +56,12 @@ final authData= Provider.of<Auth>(context,listen: false);
               Scaffold.of(context).hideCurrentSnackBar();
               Scaffold.of(context).showSnackBar(SnackBar(
                 content: Text('Added item to cart!'),
-                action: SnackBarAction(label: 'Undo',onPressed: (){
-                  cart.removeSingleItem(product.id);
-                },),
+                action: SnackBarAction(
+                  label: 'Undo',
+                  onPressed: () {
+                    cart.removeSingleItem(product.id);
+                  },
+                ),
                 duration: Duration(seconds: 2),
               ));
             },
