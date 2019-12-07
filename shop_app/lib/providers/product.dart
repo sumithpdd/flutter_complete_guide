@@ -10,8 +10,9 @@ class Product with ChangeNotifier {
   final String title;
   final String description;
   final double price;
-  final String imageUrl;
+  final String imageUrl; 
   bool isFavorite = false;
+
 //named arguments
   Product(
       {@required this.id,
@@ -19,19 +20,20 @@ class Product with ChangeNotifier {
       @required this.description,
       @required this.price,
       @required this.imageUrl,
+      
       bool isFavorite});
 
-  Future<void> toggleFavoriteStatus() async {
+  Future<void> toggleFavoriteStatus(String authToken,String userId) async {
     final oldstatus = isFavorite;
     isFavorite = !isFavorite;
-
-    final url = AppSettings.fbUrl + 'products/$id.json';
+      notifyListeners();
+    final url = AppSettings.fbUrl + 'userFavorites/$userId/$id.json' +'?auth=$authToken';
     try {
-      final response = await http.patch(
+      final response = await http.put(
         url,
-        body: json.encode({
-          'isFavorite': isFavorite,
-        }),
+        body: json.encode(
+           isFavorite,
+        ),
       );
       if (response.statusCode >= 400) {
         isFavorite = oldstatus;
